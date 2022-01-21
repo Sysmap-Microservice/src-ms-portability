@@ -1,5 +1,5 @@
 package com.sysmap.srcmsportability.application.ports.out;
 
-public interface Repository {
+public interface PortabilityRepository {
 
 }
