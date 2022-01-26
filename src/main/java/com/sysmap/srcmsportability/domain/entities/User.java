@@ -1,4 +1,4 @@
-package com.sysmap.srcmsportability.application.entities;
+package com.sysmap.srcmsportability.domain.entities;
 
 
 import lombok.Data;

@@ -1,5 +1,6 @@
-package com.sysmap.srcmsportability.application.entities;
+package com.sysmap.srcmsportability.domain.entities;
 
+import com.sysmap.srcmsportability.domain.entities.enums.CellPhoneOperator;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -16,6 +17,6 @@ public class Portability {
     @Id
     @Column(name = "portability_id")
     private UUID portabilityId;
-    private Operadora source;
-    private Operadora target;
+    private CellPhoneOperator source;
+    private CellPhoneOperator target;
 }
