@@ -1,6 +1,7 @@
 package com.sysmap.srcmsportability.domain.entities;
 
 import com.sysmap.srcmsportability.domain.entities.enums.CellPhoneOperator;
+import com.sysmap.srcmsportability.domain.entities.enums.StatusPortability;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -19,4 +20,5 @@ public class Portability {
     private UUID portabilityId;
     private CellPhoneOperator source;
     private CellPhoneOperator target;
+    private StatusPortability status;
 }

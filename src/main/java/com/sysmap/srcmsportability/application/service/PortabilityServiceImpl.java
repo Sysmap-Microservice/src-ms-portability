@@ -3,16 +3,38 @@ package com.sysmap.srcmsportability.application.service;
 import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
 import com.sysmap.srcmsportability.application.ports.out.PortabilityRepository;
 import com.sysmap.srcmsportability.domain.entities.Portability;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.sysmap.srcmsportability.domain.entities.enums.StatusPortability;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.ResponseEntity;
 
-@Service
+import java.util.Optional;
+import java.util.UUID;
+
 public class PortabilityServiceImpl implements PortabilityService {
 
-    @Autowired
-    private PortabilityRepository portabilityRepository;
+    private final PortabilityRepository portabilityRepository;
 
+    public PortabilityServiceImpl(PortabilityRepository portabilityRepository) {
+        this.portabilityRepository = portabilityRepository;
+    }
+
+    @Override
     public Portability createPortability(Portability portability) {
         return portabilityRepository.savePortability(portability);
     }
+
+    @Override
+    public ResponseEntity putStatusPortability(UUID portabilityId, StatusPortability status) throws ChangeSetPersister.NotFoundException {
+
+        Optional<Portability> optionalPortability = portabilityRepository.findPortabilityById(portabilityId);
+        if(!optionalPortability.isPresent()) {
+            throw new ChangeSetPersister.NotFoundException();
+        }
+        Portability portability = optionalPortability.get();
+        portability.setStatus(status);
+        portabilityRepository.savePortability(portability);
+
+        return ResponseEntity.ok(portability);
+    }
+
 }
