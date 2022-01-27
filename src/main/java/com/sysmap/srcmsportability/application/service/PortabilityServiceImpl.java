@@ -20,7 +20,7 @@ public class PortabilityServiceImpl implements PortabilityService {
 
     @Override
     public Portability createPortability(Portability portability) {
-        return portabilityRepository.savePortability(portability);
+        return null;
     }
 
     @Override

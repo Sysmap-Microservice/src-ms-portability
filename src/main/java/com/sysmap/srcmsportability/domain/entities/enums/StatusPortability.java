@@ -2,5 +2,6 @@ package com.sysmap.srcmsportability.domain.entities.enums;
 
 public enum StatusPortability {
     PORTADO,
-    NAO_AUTORIZADO
+    NAO_AUTORIZADO,
+    PROCESSANDO_PORTABILIDADE
 }

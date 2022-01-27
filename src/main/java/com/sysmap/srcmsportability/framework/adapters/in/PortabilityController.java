@@ -5,6 +5,7 @@ import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPortability;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPutStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +19,9 @@ public class PortabilityController {
     private PortabilityService portabilityService;
 
     @PostMapping("/portability")
-    public void createPortability(@RequestBody InputPortability inputPortability) {
+    public ResponseEntity createPortability(@RequestBody InputPortability inputPortability) {
         portabilityService.createPortability(inputPortability.getPortability());
+        return new ResponseEntity( HttpStatus.CREATED );
     }
 
     @PutMapping("/portability/{portabilityId}")
