@@ -20,7 +20,7 @@ public class PortabilityController {
 
     @PostMapping("/portability")
     public ResponseEntity createPortability(@RequestBody InputPortability inputPortability) {
-        portabilityService.createPortability(inputPortability.getPortability());
+        portabilityService.createPortability(inputPortability.getPortability(), inputPortability.getUser());
         return new ResponseEntity( HttpStatus.CREATED );
     }
 
