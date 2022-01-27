@@ -2,9 +2,8 @@ package com.sysmap.srcmsportability.application.service;
 
 import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
 import com.sysmap.srcmsportability.application.ports.out.PortabilityRepository;
-import com.sysmap.srcmsportability.domain.entities.Portability;
-import com.sysmap.srcmsportability.domain.entities.User;
-import com.sysmap.srcmsportability.domain.entities.enums.StatusPortability;
+import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
+import com.sysmap.srcmsportability.application.ports.in.entities.enums.StatusPortability;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 
@@ -20,8 +19,8 @@ public class PortabilityServiceImpl implements PortabilityService {
     }
 
     @Override
-    public Portability createPortability(Portability portability, User user) {
-        return null;
+    public Portability createPortability(Portability portability) {
+        return this.portabilityRepository.savePortability(portability);
     }
 
     @Override

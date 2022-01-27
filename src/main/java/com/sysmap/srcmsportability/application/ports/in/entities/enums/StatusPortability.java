@@ -1,4 +1,4 @@
-package com.sysmap.srcmsportability.domain.entities.enums;
+package com.sysmap.srcmsportability.application.ports.in.entities.enums;
 
 public enum StatusPortability {
     PORTADO,

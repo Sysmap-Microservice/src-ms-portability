@@ -1,6 +1,7 @@
 package com.sysmap.srcmsportability.framework.adapters.in;
 
 import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
+import com.sysmap.srcmsportability.application.ports.in.UserService;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPortability;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPutStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,13 @@ public class PortabilityController {
     @Autowired
     private PortabilityService portabilityService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/portability")
     public ResponseEntity createPortability(@RequestBody InputPortability inputPortability) {
-        portabilityService.createPortability(inputPortability.getPortability(), inputPortability.getUser());
+            this.userService.createUser(inputPortability.getUser());
+            this.portabilityService.createPortability(inputPortability.getPortability());
         return new ResponseEntity( HttpStatus.CREATED );
     }
 

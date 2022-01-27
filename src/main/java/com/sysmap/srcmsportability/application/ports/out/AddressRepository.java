@@ -1,6 +1,6 @@
 package com.sysmap.srcmsportability.application.ports.out;
 
-import com.sysmap.srcmsportability.domain.entities.Address;
+import com.sysmap.srcmsportability.application.ports.in.entities.Address;
 
 import java.util.Optional;
 import java.util.UUID;
