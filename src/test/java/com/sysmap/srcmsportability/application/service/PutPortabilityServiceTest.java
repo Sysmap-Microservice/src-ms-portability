@@ -2,16 +2,16 @@ package com.sysmap.srcmsportability.application.service;
 
 import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
 import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
+import com.sysmap.srcmsportability.application.ports.in.entities.enums.CellPhoneOperator;
 import com.sysmap.srcmsportability.application.ports.in.entities.enums.StatusPortability;
 import com.sysmap.srcmsportability.application.ports.out.PortabilityRepository;
+import com.sysmap.srcmsportability.domain.entities.exceptions.PortabilityNotFound;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.crossstore.ChangeSetPersister;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -34,17 +34,21 @@ class PutPortabilityServiceTest {
     }
 
     @Spy
-    Portability portability = new Portability();
+    Portability portability = Portability.builder()
+            .status(StatusPortability.PORTED)
+            .target(CellPhoneOperator.CLARO)
+            .source(CellPhoneOperator.VIVO)
+            .build();
     UUID portabilityId = UUID.randomUUID();
 
     @Test
-    void shouldPutStatusPortability() throws ChangeSetPersister.NotFoundException {
+    void shouldPutStatusPortability() {
 
         when(portabilityRepository.findPortabilityById(portabilityId)).thenReturn(Optional.of(portability));
 
-        portabilityService.putStatusPortability(portabilityId, StatusPortability.PORTADO);
+        portabilityService.putStatusPortability(portabilityId, StatusPortability.PORTED);
 
-        assertEquals(StatusPortability.PORTADO, portability.getStatus());
+        assertEquals(StatusPortability.PORTED, portability.getStatus());
 
     }
 
@@ -53,8 +57,8 @@ class PutPortabilityServiceTest {
 
         when(portabilityRepository.findPortabilityById(portabilityId)).thenReturn(Optional.empty());
 
-        assertThrows(ChangeSetPersister.NotFoundException.class, () -> {
-            portabilityService.putStatusPortability(portabilityId, StatusPortability.PORTADO);
+        assertThrows(PortabilityNotFound.class, () -> {
+            portabilityService.putStatusPortability(portabilityId, StatusPortability.PORTED);
         });
     }
 

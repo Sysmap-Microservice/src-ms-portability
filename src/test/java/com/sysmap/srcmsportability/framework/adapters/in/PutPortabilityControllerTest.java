@@ -1,9 +1,6 @@
 package com.sysmap.srcmsportability.framework.adapters.in;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
-import com.sysmap.srcmsportability.application.ports.in.entities.enums.StatusPortability;
-import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPutStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -32,16 +29,10 @@ class PutPortabilityControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper objectMapper;
-
     UUID portabilityId = UUID.randomUUID();
-    InputPutStatus inputPutStatus = new InputPutStatus();
 
     @Test
     void shouldPutStatusPortability() throws Exception {
-        inputPutStatus.setStatus(StatusPortability.PORTADO);
-
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
 
@@ -49,14 +40,13 @@ class PutPortabilityControllerTest {
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(inputPutStatus)))
+                .content("{\"status\": \"PORTED\"}"))
                 .andExpect(status().isOk())
                 .andReturn();
     }
 
     @Test
-    void shouldReturnMethodNotAllowedExceptionBecausePortabilityIdIsNull() throws Exception {
-        inputPutStatus.setStatus(StatusPortability.PORTADO);
+    void shouldReturnNotFoundExceptionBecausePortabilityIdIsNull() throws Exception {
         portabilityId = null;
 
         HttpHeaders headers = new HttpHeaders();
@@ -66,8 +56,8 @@ class PutPortabilityControllerTest {
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(inputPutStatus)))
-                .andExpect(status().is(HttpStatus.METHOD_NOT_ALLOWED.value()))
+                        .content("{\"status\": \"PORTED\"}"))
+                .andExpect(status().is(HttpStatus.NOT_FOUND.value()))
                 .andReturn();
     }
 
@@ -80,7 +70,7 @@ class PutPortabilityControllerTest {
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(null)))
+                        .content(""))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                 .andReturn();
     }
@@ -94,10 +84,9 @@ class PutPortabilityControllerTest {
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(inputPutStatus)))
+                        .content("{\"status\": \"\"}"))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                 .andReturn();
     }
-
 
 }
