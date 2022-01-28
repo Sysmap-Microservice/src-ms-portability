@@ -15,7 +15,5 @@ class SrcMsPortabilityApplicationTests {
 
 	@Test
 	void contextLoads(){
-//		PortabilityPostTest portabilityPostTest = new PortabilityPostTest();
-//		portabilityPostTest.verificaSeRetornaStatusCriadoAposReceberJsonNoPost();
 	}
 }
