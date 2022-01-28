@@ -2,6 +2,7 @@ package com.sysmap.srcmsportability.application.ports.in.entities;
 
 import com.sysmap.srcmsportability.application.ports.in.entities.enums.CellPhoneOperator;
 import com.sysmap.srcmsportability.application.ports.in.entities.enums.StatusPortability;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "tb_portability")
+@Builder
 public class Portability {
 
     @Id

@@ -2,10 +2,11 @@ package com.sysmap.srcmsportability.framework.adapters.in;
 
 import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
 import com.sysmap.srcmsportability.application.ports.in.UserService;
+import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPortability;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPutStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,25 +14,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("ms-src-portability/v1")
 public class PortabilityController {
 
-    @Autowired
-    private PortabilityService portabilityService;
+    private final PortabilityService portabilityService;
 
-    @Autowired
-    private UserService userService;
-
-    @PostMapping("/portability")
-    public ResponseEntity createPortability(@RequestBody InputPortability inputPortability) {
-            this.userService.createUser(inputPortability.getUser());
-            this.portabilityService.createPortability(inputPortability.getPortability());
-        return new ResponseEntity( HttpStatus.CREATED );
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Portability createPortability(@RequestBody InputPortability inputPortability){
+         return portabilityService.createPortability(inputPortability);
     }
 
     @PutMapping("/portability/{portabilityId}")
-    public ResponseEntity putStatusPortability(@RequestBody InputPutStatus inputPutStatus, @PathVariable UUID portabilityId)
-            throws ChangeSetPersister.NotFoundException {
-        return portabilityService.putStatusPortability(portabilityId, inputPutStatus.getStatus());
+    public ResponseEntity<Void> putStatusPortability(@RequestBody InputPutStatus inputPutStatus,
+                                                     @PathVariable UUID portabilityId) {
+        portabilityService.putStatusPortability(portabilityId, inputPutStatus.getStatus());
+        return ResponseEntity.ok().build();
     }
 }
