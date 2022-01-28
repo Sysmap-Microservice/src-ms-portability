@@ -1,13 +1,15 @@
 package com.sysmap.srcmsportability.framework.adapters.in.dto;
 
-import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
+import com.sysmap.srcmsportability.application.ports.in.entities.enums.CellPhoneOperator;
+import com.sysmap.srcmsportability.application.ports.in.entities.enums.StatusPortability;
 import lombok.Data;
-
-import java.util.UUID;
 
 @Data
 public class InputPortability {
 
-    private Portability portability;
-    private UUID userId;
+    private CellPhoneOperator source;
+
+    private CellPhoneOperator target;
+
+    private StatusPortability status;
 }

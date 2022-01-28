@@ -2,6 +2,8 @@ package com.sysmap.srcmsportability.application.ports.in.entities;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -20,6 +22,7 @@ public class User {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
+
     @Column(name = "user_id")
     private UUID userId;
 
@@ -34,4 +37,6 @@ public class User {
     private LocalDate dateOfBirth;
 
     private String documentNumber;
+
+    private UUID portabilityId;
 }

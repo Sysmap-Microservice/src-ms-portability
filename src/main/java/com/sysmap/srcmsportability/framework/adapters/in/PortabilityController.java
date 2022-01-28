@@ -20,16 +20,10 @@ public class PortabilityController {
 
     private final PortabilityService portabilityService;
 
-//    public ResponseEntity createPortability(@RequestBody InputPortability inputPortability) {
-//        this.userService.createUser(inputPortability.getUser());
-//        this.portabilityService.createPortability(inputPortability.getPortability());
-//        return new ResponseEntity(HttpStatus.CREATED);
-//    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Portability createPortability(@RequestBody InputPortability inputPortability){
-        return portabilityService.createPortability(inputPortability.getPortability());
+         return portabilityService.createPortability(inputPortability);
     }
 
     @PutMapping("/portability/{portabilityId}")

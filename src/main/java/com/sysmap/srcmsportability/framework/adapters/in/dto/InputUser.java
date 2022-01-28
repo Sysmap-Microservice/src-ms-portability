@@ -5,6 +5,7 @@ import com.sysmap.srcmsportability.application.ports.in.entities.LineInformation
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 public class InputUser {
@@ -18,5 +19,7 @@ public class InputUser {
     private LocalDate dateOfBirth;
 
     private String documentNumber;
+
+    private UUID portabilityId;
 
 }

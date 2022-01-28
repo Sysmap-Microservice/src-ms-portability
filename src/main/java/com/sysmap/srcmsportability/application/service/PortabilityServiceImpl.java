@@ -5,6 +5,7 @@ import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
 import com.sysmap.srcmsportability.application.ports.in.entities.enums.StatusPortability;
 import com.sysmap.srcmsportability.application.ports.out.PortabilityRepository;
 import com.sysmap.srcmsportability.domain.entities.exceptions.PortabilityNotFound;
+import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPortability;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -17,13 +18,14 @@ public class PortabilityServiceImpl implements PortabilityService {
         this.portabilityRepository = portabilityRepository;
     }
 
-//    @Override
-//    public Portability createPortability(Portability portability) {
-//        return this.portabilityRepository.savePortability(portability);
-//    }
-
     @Override
-    public Portability createPortability(Portability portability){
+    public Portability createPortability(InputPortability request){
+        var portability = Portability.builder()
+                .status(request.getStatus())
+                .target(request.getTarget())
+                .source(request.getSource())
+                .build();
+
         return portabilityRepository.savePortability(portability);
     }
 
