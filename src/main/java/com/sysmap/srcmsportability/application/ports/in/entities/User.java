@@ -1,6 +1,6 @@
 package com.sysmap.srcmsportability.application.ports.in.entities;
 
-
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -11,6 +11,7 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "tb_user")
+@Builder
 public class User {
 
     @Id
@@ -29,6 +30,8 @@ public class User {
     private Address address;
 
     private String name;
+
     private LocalDate dateOfBirth;
+
     private String documentNumber;
 }
