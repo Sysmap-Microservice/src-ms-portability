@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -52,5 +53,51 @@ class PutPortabilityControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
     }
+
+    @Test
+    void shouldReturnMethodNotAllowedExceptionBecausePortabilityIdIsNull() throws Exception {
+        inputPutStatus.setStatus(StatusPortability.PORTADO);
+        portabilityId = null;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+
+        this.mockMvc.perform(put("/ms-src-portability/v1/portability/{portabilityId}", portabilityId)
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(inputPutStatus)))
+                .andExpect(status().is(HttpStatus.METHOD_NOT_ALLOWED.value()))
+                .andReturn();
+    }
+
+    @Test
+    void shouldReturnBadRequestExceptionBecauseInputStatusIsNull() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+
+        this.mockMvc.perform(put("/ms-src-portability/v1/portability/{portabilityId}", portabilityId)
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(null)))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andReturn();
+    }
+
+    @Test
+    void shouldReturnBadRequestExceptionBecauseStatusPortabilityIsNull() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+
+        this.mockMvc.perform(put("/ms-src-portability/v1/portability/{portabilityId}", portabilityId)
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(inputPutStatus)))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andReturn();
+    }
+
 
 }
