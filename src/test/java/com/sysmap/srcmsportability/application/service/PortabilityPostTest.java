@@ -43,7 +43,8 @@ class PortabilityPostTest {
     @Autowired
     MockMvc mockMvc;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    ObjectMapper mapper;
 
     @Test
     public void verifyIfReturnsOkToCorrectInformedInTheActivity() throws Exception {
@@ -54,8 +55,8 @@ class PortabilityPostTest {
         MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/ms-src-portability/v1/portability")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(this.getMockPortability()))
-                .content(this.mapper.writeValueAsString(this.getMockUser()));
+                .content(mapper.writeValueAsString(this.getMockPortability()))
+                .content(mapper.writeValueAsString(this.getMockUser()));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isCreated());
@@ -69,7 +70,7 @@ class PortabilityPostTest {
         MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/ms-src-portability/v1/portability")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(this.getMockPortability()));
+                .content(mapper.writeValueAsString(this.getMockPortability()));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isCreated());
@@ -82,7 +83,7 @@ class PortabilityPostTest {
         MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/ms-src-portability/v1/portability")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(this.getMockUser()));
+                .content(mapper.writeValueAsString(this.getMockUser()));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isCreated());
@@ -96,8 +97,8 @@ class PortabilityPostTest {
         MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/ms-src-portability/v1/portability")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(this.getMockPortability()))
-                .content(this.mapper.writeValueAsString(this.getMockUserWithoutLineInformation()));
+                .content(mapper.writeValueAsString(this.getMockPortability()))
+                .content(mapper.writeValueAsString(this.getMockUserWithoutLineInformation()));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isCreated());
@@ -111,8 +112,8 @@ class PortabilityPostTest {
         MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/ms-src-portability/v1/portability")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(this.getMockPortability()))
-                .content(this.mapper.writeValueAsString(this.getMockUserWithoutAddress()));
+                .content(mapper.writeValueAsString(this.getMockPortability()))
+                .content(mapper.writeValueAsString(this.getMockUserWithoutAddress()));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isCreated());
