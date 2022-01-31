@@ -1,9 +1,6 @@
 package com.sysmap.srcmsportability.application.ports.in.entities;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -13,7 +10,8 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "tb_user")
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -26,10 +24,10 @@ public class User {
     @Column(name = "user_id")
     private UUID userId;
 
-    @OneToOne(cascade=CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST)
     private LineInformation line;
 
-    @OneToOne(cascade=CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Address address;
 
     private String name;
@@ -37,6 +35,4 @@ public class User {
     private LocalDate dateOfBirth;
 
     private String documentNumber;
-
-    private UUID portabilityId;
 }
