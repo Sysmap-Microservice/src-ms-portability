@@ -1,12 +1,10 @@
 package com.sysmap.srcmsportability.framework.adapters.in;
 
 import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
-import com.sysmap.srcmsportability.application.ports.in.UserService;
 import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPortability;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPutStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +20,8 @@ public class PortabilityController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Portability createPortability(@RequestBody InputPortability inputPortability){
-         return portabilityService.createPortability(inputPortability);
+    public Portability create(@RequestBody InputPortability portability){
+        return portabilityService.createPortability(portability);
     }
 
     @PutMapping("/portability/{portabilityId}")

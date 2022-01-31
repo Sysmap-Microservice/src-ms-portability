@@ -19,21 +19,23 @@ public class PortabilityServiceImpl implements PortabilityService {
     }
 
     @Override
-    public Portability createPortability(InputPortability request){
-        var portability = Portability.builder()
-                .status(request.getStatus())
-                .target(request.getTarget())
-                .source(request.getSource())
+    public Portability createPortability(InputPortability portability) {
+
+        var response = Portability.builder()
+                .source(portability.getSource())
+                .status(portability.getStatus())
+                .target(portability.getTarget())
+                .user(portability.getUser())
                 .build();
 
-        return portabilityRepository.savePortability(portability);
+        return portabilityRepository.savePortability(response);
     }
 
     @Override
     public void putStatusPortability(UUID portabilityId, StatusPortability status) {
 
         Optional<Portability> optionalPortability = portabilityRepository.findPortabilityById(portabilityId);
-        if(optionalPortability.isEmpty()) {
+        if (optionalPortability.isEmpty()) {
             throw new PortabilityNotFound("portability not found with id: " + portabilityId);
         }
 
@@ -43,3 +45,5 @@ public class PortabilityServiceImpl implements PortabilityService {
     }
 
 }
+
+
