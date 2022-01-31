@@ -21,6 +21,7 @@ public class PortabilityController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Portability create(@RequestBody InputPortability portability){
+        System.out.println(portability);
         return portabilityService.createPortability(portability);
     }
 
