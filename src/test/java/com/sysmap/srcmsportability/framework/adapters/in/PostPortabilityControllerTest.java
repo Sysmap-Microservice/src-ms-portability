@@ -1,12 +1,9 @@
-package com.sysmap.srcmsportability.application.service;
+package com.sysmap.srcmsportability.framework.adapters.in;
 
 import com.sysmap.srcmsportability.SrcMsPortabilityApplication;
 import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
-import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
-import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPortability;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,13 +26,13 @@ import static org.junit.Assert.assertEquals;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @AutoConfigureMockMvc
-class PortabilityPostTest {
+class PostPortabilityControllerTest {
 
     @MockBean
     private PortabilityService portabilityService;
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Test
     public void verifyIfReturnsOkToCorrectInformedInTheActivity() throws Exception {
@@ -65,7 +62,7 @@ class PortabilityPostTest {
     // Novo possível cenário -> se der erro ao cadastrar posso publicar no kafka ?
 
     private void makeRequest(String json) throws Exception {
-        Mockito.when(portabilityService.createPortability(Mockito.any(InputPortability.class))).thenReturn(Mockito.any(Portability.class));
+//        Mockito.when(portabilityService.createPortability(Mockito.any(InputPortability.class))).thenReturn(Mockito.any(Portability.class));
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/ms-src-portability/v1")
                 .accept(MediaType.APPLICATION_JSON)
