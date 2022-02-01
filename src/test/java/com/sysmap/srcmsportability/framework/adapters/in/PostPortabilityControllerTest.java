@@ -15,9 +15,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @RunWith(SpringRunner.class)
 
@@ -59,12 +59,16 @@ class PostPortabilityControllerTest {
         this.makeRequest(this.jsonWithoutAddressInformation());
     }
 
+    @Test
+    public void verifyIfReturnsOkEmptyJson() throws Exception {
+        this.makeRequest("");
+    }
+
     // Novo possível cenário -> se der erro ao cadastrar posso publicar no kafka ?
 
     private void makeRequest(String json) throws Exception {
 //        Mockito.when(portabilityService.createPortability(Mockito.any(InputPortability.class))).thenReturn(Mockito.any(Portability.class));
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/ms-src-portability/v1")
+        RequestBuilder requestBuilder = post("/ms-src-portability/v1")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON);
