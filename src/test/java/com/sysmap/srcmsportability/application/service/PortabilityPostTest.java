@@ -1,12 +1,8 @@
 package com.sysmap.srcmsportability.application.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sysmap.srcmsportability.SrcMsPortabilityApplication;
 import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
-import com.sysmap.srcmsportability.application.ports.in.entities.Address;
-import com.sysmap.srcmsportability.application.ports.in.entities.LineInformation;
 import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
-import com.sysmap.srcmsportability.application.ports.in.entities.User;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPortability;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -15,13 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 
@@ -38,154 +37,135 @@ class PortabilityPostTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper mapper;
-
     @Test
     public void verifyIfReturnsOkToCorrectInformedInTheActivity() throws Exception {
-
-        Mockito.when(portabilityService.createPortability(this.getMockInputPortability())).thenReturn(this.getMockPortability());
-
-        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/ms-src-portability/v1/portability")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(this.getMockInputPortability()));
-
-        mockMvc.perform(mockRequest)
-                .andExpect(status().isCreated());
+        this.makeRequest(this.jsonWithAllInformation());
     }
 
-//    @Test
-//    public void verifyIfReturnsOkWithoutUser() throws Exception {
-//
-//        Mockito.when(portabilityService.createPortability(this.getMockInputPortability())).thenReturn(this.getMockPortability());
-//
-//        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/ms-src-portability/v1/portability")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .content(mapper.writeValueAsString(this.getMockPortability()));
-//
-//        mockMvc.perform(mockRequest)
-//                .andExpect(status().isCreated());
-//    }
+    @Test
+    public void verifyIfReturnsOkWithoutUser() throws Exception {
+        this.makeRequest(this.jsonWithoutUser());
+    }
 
-//    @Test
-//    public void verifyIfReturnsOkWithoutPortability() throws Exception {
-//        Mockito.when(userService.createUser(this.getMockUser())).thenReturn(this.getMockUser());
-//
-//        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/ms-src-portability/v1/portability")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .content(mapper.writeValueAsString(this.getMockUser()));
-//
-//        mockMvc.perform(mockRequest)
-//                .andExpect(status().isCreated());
-//    }
+    @Test
+    public void verifyIfReturnsOkWithoutPortability() throws Exception {
+        this.makeRequest(this.jsonWithoutPortability());
+    }
 
-//    @Test
-//    public void verifyIfReturnsOkWithoutLineInformation() throws Exception {
-//        Mockito.when(portabilityService.createPortability(this.getMockPortability())).thenReturn(this.getMockPortability());
-//        Mockito.when(userService.createUser(this.getMockUserWithoutLineInformation())).thenReturn(this.getMockUserWithoutLineInformation());
-//
-//        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/ms-src-portability/v1/portability")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .content(mapper.writeValueAsString(this.getMockPortability()))
-//                .content(mapper.writeValueAsString(this.getMockUserWithoutLineInformation()));
-//
-//        mockMvc.perform(mockRequest)
-//                .andExpect(status().isCreated());
-//    }
+    @Test
+    public void verifyIfReturnsOkWithoutLineInformation() throws Exception {
+        this.makeRequest(this.jsonWithoutLineInformation());
+    }
 
-//    @Test
-//    public void verifyIfReturnsOkWithoutAddress() throws Exception {
-//        Mockito.when(portabilityService.createPortability(this.getMockPortability())).thenReturn(this.getMockPortability());
-//        Mockito.when(userService.createUser(this.getMockUserWithoutAddress())).thenReturn(this.getMockUserWithoutAddress());
-//
-//        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/ms-src-portability/v1/portability")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .content(mapper.writeValueAsString(this.getMockPortability()))
-//                .content(mapper.writeValueAsString(this.getMockUserWithoutAddress()));
-//
-//        mockMvc.perform(mockRequest)
-//                .andExpect(status().isCreated());
-//    }
+    @Test
+    public void verifyIfReturnsOkWithoutAddress() throws Exception {
+        this.makeRequest(this.jsonWithoutAddressInformation());
+    }
 
     // Novo possível cenário -> se der erro ao cadastrar posso publicar no kafka ?
 
-    private Portability getMockPortability() {
+    private void makeRequest(String json) throws Exception {
+        Mockito.when(portabilityService.createPortability(Mockito.any(InputPortability.class))).thenReturn(Mockito.any(Portability.class));
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/ms-src-portability/v1")
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON);
 
-//        Portability(portabilityId=null, source=null, target=null, status=null, user=User(userId=null, line=LineInformation(lineId=null, number=999999999), address=Address(addressId=null, street=XXXXX, number=XXXXX, city=XXXXX, country=XXXXX, stateOrRegion=XXXXX), name=Jose da Silva, dateOfBirth=null, documentNumber=441558478995))
-        Portability portability = new Portability();
-        portability.setSource(null);
-        portability.setStatus(null);
-        portability.setTarget(null);
-        portability.setUser(this.getMockUser());
-
-        return portability;
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = result.getResponse();
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
     }
 
-    private User getMockUser() {
-        User user = new User();
-//        user.setDateOfBirth(LocalDate.now());
-        user.setDocumentNumber("441558478995");
-        user.setName("Jose da Silva");
-
-        LineInformation  lineInformation = new LineInformation();
-        lineInformation.setNumber("999999999");
-        user.setLine(lineInformation);
-
-        Address address = new Address();
-        address.setNumber("XXXXX");
-        address.setCity("XXXXX");
-        address.setNumber("XXXXX");
-        address.setCountry("XXXXX");
-        address.setStreet("XXXXX");
-        address.setStateOrRegion("XXXXX");
-        user.setAddress(address);
-
-        return user;
+    private String jsonWithAllInformation() {
+        return "{\n" +
+                "   \"user\":{\n" +
+                "      \"line\":{\n" +
+                "         \"number\":\"999999999\"\n" +
+                "      },\n" +
+                "      \"address\":{\n" +
+                "         \"street\":\"XXXXX\",\n" +
+                "         \"number\":\"XXXXX\",\n" +
+                "         \"city\":\"XXXXX\",\n" +
+                "         \"country\":\"XXXXX\",\n" +
+                "         \"stateOrRegion\":\"XXXX\"\n" +
+                "      },\n" +
+                "      \"name\":\"Jose da Silva\",\n" +
+                "      \"dateOfBirth\":\"1970-01-01\",\n" +
+                "      \"documentNumber\":\"441558478995\"\n" +
+                "   },\n" +
+                "   \"portability\":{\n" +
+                "      \"source\":\"VIVO\",\n" +
+                "      \"target\":\"CLARO\"\n" +
+                "   }\n" +
+                "}";
     }
 
-    private User getMockUserWithoutLineInformation() {
-        User user = new User();
-//        user.setDateOfBirth(LocalDate.now());
-        user.setDocumentNumber("441558478995");
-        user.setName("Jose da Silva");
+    private String jsonWithoutUser() {
 
-        Address address = new Address();
-        address.setNumber("XXXXX");
-        address.setCity("XXXXX");
-        address.setNumber("XXXXX");
-        address.setCountry("XXXXX");
-        address.setStreet("XXXXX");
-        address.setStateOrRegion("XXXXX");
-        user.setAddress(address);
-
-        return user;
+        return "{\n" +
+                "   \"portability\":{\n" +
+                "      \"source\":\"VIVO\",\n" +
+                "      \"target\":\"CLARO\"\n" +
+                "   }\n" +
+                "}";
     }
 
-    private User getMockUserWithoutAddress() {
-        User user = new User();
-//        user.setDateOfBirth(LocalDate.now());
-        user.setDocumentNumber("441558478995");
-        user.setName("Jose da Silva");
-
-        LineInformation  lineInformation = new LineInformation();
-        lineInformation.setNumber("999999999");
-        user.setLine(lineInformation);
-
-        return user;
+    private String jsonWithoutPortability() {
+        return "{\n" +
+                "   \"user\":{\n" +
+                "      \"line\":{\n" +
+                "         \"number\":\"999999999\"\n" +
+                "      },\n" +
+                "      \"address\":{\n" +
+                "         \"street\":\"XXXXX\",\n" +
+                "         \"number\":\"XXXXX\",\n" +
+                "         \"city\":\"XXXXX\",\n" +
+                "         \"country\":\"XXXXX\",\n" +
+                "         \"stateOrRegion\":\"XXXX\"\n" +
+                "      },\n" +
+                "      \"name\":\"Jose da Silva\",\n" +
+                "      \"dateOfBirth\":\"1970-01-01\",\n" +
+                "      \"documentNumber\":\"441558478995\"\n" +
+                "   }\n" +
+                "}";
     }
 
-    private InputPortability getMockInputPortability(){
-//        InputPortability(source=null, target=null, status=null, user=User(userId=null, line=LineInformation(lineId=null, number=999999999), address=Address(addressId=null, street=XXXXX, number=XXXXX, city=XXXXX, country=XXXXX, stateOrRegion=XXXX), name=Jose da Silva, dateOfBirth=1970-01-01, documentNumber=441558478995))
-        InputPortability inputPortability =  new InputPortability();
-        inputPortability.setSource(null);
-        inputPortability.setTarget(null);
-        inputPortability.setStatus(null);
-        inputPortability.setUser(this.getMockUser());
-        return inputPortability;
+    private String jsonWithoutLineInformation() {
+        return "{\n" +
+                "   \"user\":{\n" +
+                "      \"address\":{\n" +
+                "         \"street\":\"XXXXX\",\n" +
+                "         \"number\":\"XXXXX\",\n" +
+                "         \"city\":\"XXXXX\",\n" +
+                "         \"country\":\"XXXXX\",\n" +
+                "         \"stateOrRegion\":\"XXXX\"\n" +
+                "      },\n" +
+                "      \"name\":\"Jose da Silva\",\n" +
+                "      \"dateOfBirth\":\"1970-01-01\",\n" +
+                "      \"documentNumber\":\"441558478995\"\n" +
+                "   },\n" +
+                "   \"portability\":{\n" +
+                "      \"source\":\"VIVO\",\n" +
+                "      \"target\":\"CLARO\"\n" +
+                "   }\n" +
+                "}";
+    }
+
+    private String jsonWithoutAddressInformation() {
+        return "{\n" +
+                "   \"user\":{\n" +
+                "      \"line\":{\n" +
+                "         \"number\":\"999999999\"\n" +
+                "      },\n" +
+                "      \"name\":\"Jose da Silva\",\n" +
+                "      \"dateOfBirth\":\"1970-01-01\",\n" +
+                "      \"documentNumber\":\"441558478995\"\n" +
+                "   },\n" +
+                "   \"portability\":{\n" +
+                "      \"source\":\"VIVO\",\n" +
+                "      \"target\":\"CLARO\"\n" +
+                "   }\n" +
+                "}";
     }
 }
