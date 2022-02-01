@@ -5,6 +5,7 @@ import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
 import com.sysmap.srcmsportability.application.ports.in.entities.enums.CellPhoneOperator;
 import com.sysmap.srcmsportability.application.ports.in.entities.enums.StatusPortability;
 import com.sysmap.srcmsportability.application.ports.out.PortabilityRepository;
+import com.sysmap.srcmsportability.application.ports.out.UserPortabilityProducer;
 import com.sysmap.srcmsportability.domain.entities.exceptions.PortabilityNotFound;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,10 +28,12 @@ class PutPortabilityServiceTest {
 
     @Mock
     private PortabilityRepository portabilityRepository;
+    @Mock
+    private UserPortabilityProducer userPortabilityProducer;
 
     @BeforeEach
     public void setup() {
-        portabilityService = new PortabilityServiceImpl(portabilityRepository);
+        portabilityService = new PortabilityServiceImpl(portabilityRepository,userPortabilityProducer);
     }
 
     @Spy
