@@ -31,9 +31,9 @@ public class PortabilityServiceImpl implements PortabilityService {
                 .target(portability.getTarget())
                 .user(portability.getUser())
                 .build();
-        final Portability savePortability = portabilityRepository.savePortability(response);
-        userPortabilityProducer.send( savePortability );
-        return savePortability;
+        final Portability savedPortability = portabilityRepository.savePortability(response);
+        userPortabilityProducer.send( savedPortability );
+        return savedPortability;
     }
 
     @Override

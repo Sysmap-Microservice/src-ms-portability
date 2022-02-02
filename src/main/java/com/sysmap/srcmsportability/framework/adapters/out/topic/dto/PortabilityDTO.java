@@ -1,13 +1,13 @@
 package com.sysmap.srcmsportability.framework.adapters.out.topic.dto;
 
 import com.sysmap.srcmsportability.application.ports.in.entities.enums.CellPhoneOperator;
-import lombok.AllArgsConstructor;
-import lombok.ToString;
-
+import lombok.*;
 
 import java.util.UUID;
 
 @ToString
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class PortabilityDTO {
 

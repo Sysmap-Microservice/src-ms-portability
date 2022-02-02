@@ -5,6 +5,7 @@ import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
 
 import com.sysmap.srcmsportability.application.ports.out.UserPortabilityProducer;
 import com.sysmap.srcmsportability.framework.adapters.out.topic.dto.OutputPortability;
+import com.sysmap.srcmsportability.framework.adapters.out.topic.dto.PortabilityDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,9 +27,18 @@ public class UserPortabilityProducerImpl
     @Override
     public void send(Portability portability)
     {
-        OutputPortability outputPortability = new OutputPortability(portability);
+        final PortabilityDTO portabilityDTO = PortabilityDTO.builder()
+            .portabilityId(portability.getPortabilityId())
+            .target(portability.getTarget())
+            .source(portability.getSource())
+            .build();
+        final OutputPortability outputPortability = OutputPortability.builder()
+            .number(portability.getUser().getLine().getNumber())
+            .documentNumber(portability.getUser().getDocumentNumber())
+            .portability(portabilityDTO)
+            .build();
         log.info("Payload enviado {}", outputPortability);
-        Gson gson = new Gson();
+        final Gson gson = new Gson();
         kafkaTemplate.send(topicName, gson.toJson(outputPortability));
     }
 }
