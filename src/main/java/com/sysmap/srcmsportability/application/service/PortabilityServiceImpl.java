@@ -4,6 +4,7 @@ import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
 import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
 import com.sysmap.srcmsportability.application.ports.in.entities.enums.StatusPortability;
 import com.sysmap.srcmsportability.application.ports.out.PortabilityRepository;
+import com.sysmap.srcmsportability.application.ports.out.UserPortabilityProducer;
 import com.sysmap.srcmsportability.domain.entities.exceptions.PortabilityNotFound;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPortability;
 
@@ -14,8 +15,11 @@ public class PortabilityServiceImpl implements PortabilityService {
 
     private final PortabilityRepository portabilityRepository;
 
-    public PortabilityServiceImpl(PortabilityRepository portabilityRepository) {
+    private final UserPortabilityProducer userPortabilityProducer;
+
+    public PortabilityServiceImpl(PortabilityRepository portabilityRepository, UserPortabilityProducer userPortabilityProducer) {
         this.portabilityRepository = portabilityRepository;
+        this.userPortabilityProducer = userPortabilityProducer;
     }
 
     @Override
@@ -27,8 +31,9 @@ public class PortabilityServiceImpl implements PortabilityService {
                 .target(portability.getTarget())
                 .user(portability.getUser())
                 .build();
-
-        return portabilityRepository.savePortability(response);
+        final Portability savedPortability = portabilityRepository.savePortability(response);
+        userPortabilityProducer.send(savedPortability);
+        return savedPortability;
     }
 
     @Override
