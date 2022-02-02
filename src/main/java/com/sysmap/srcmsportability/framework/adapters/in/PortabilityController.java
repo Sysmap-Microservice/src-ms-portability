@@ -18,10 +18,10 @@ public class PortabilityController {
 
     private final PortabilityService portabilityService;
 
-    @PostMapping
+    @PostMapping("/portability")
     @ResponseStatus(HttpStatus.CREATED)
-    public Portability create(@RequestBody InputPortability portability){
-        return portabilityService.createPortability(portability);
+    public Portability create(@RequestBody InputPortability inputPortability){
+        return portabilityService.createPortability(inputPortability);
     }
 
     @PutMapping("/portability/{portabilityId}")
