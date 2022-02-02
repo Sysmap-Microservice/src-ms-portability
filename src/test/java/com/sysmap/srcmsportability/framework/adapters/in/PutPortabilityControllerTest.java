@@ -46,7 +46,7 @@ class PutPortabilityControllerTest {
     }
 
     @Test
-    void shouldReturnNotFoundExceptionBecausePortabilityIdIsNull() throws Exception {
+    void shouldReturnMethodNotAllowedExceptionBecausePortabilityIdIsNull() throws Exception {
         portabilityId = null;
 
         HttpHeaders headers = new HttpHeaders();
@@ -57,7 +57,7 @@ class PutPortabilityControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{\"status\": \"PORTED\"}"))
-                .andExpect(status().is(HttpStatus.NOT_FOUND.value()))
+                .andExpect(status().is(HttpStatus.METHOD_NOT_ALLOWED.value()))
                 .andReturn();
     }
 

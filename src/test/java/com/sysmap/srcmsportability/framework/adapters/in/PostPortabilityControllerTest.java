@@ -61,14 +61,21 @@ class PostPortabilityControllerTest {
 
     @Test
     public void verifyIfReturnsOkEmptyJson() throws Exception {
-        this.makeRequest("");
+        RequestBuilder requestBuilder = post("/ms-src-portability/v1/portability")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = result.getResponse();
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
     }
 
     // Novo possível cenário -> se der erro ao cadastrar posso publicar no kafka ?
 
     private void makeRequest(String json) throws Exception {
 //        Mockito.when(portabilityService.createPortability(Mockito.any(InputPortability.class))).thenReturn(Mockito.any(Portability.class));
-        RequestBuilder requestBuilder = post("/ms-src-portability/v1")
+        RequestBuilder requestBuilder = post("/ms-src-portability/v1/portability")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON);

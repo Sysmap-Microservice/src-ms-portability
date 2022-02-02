@@ -8,11 +8,8 @@ import lombok.Data;
 @Data
 public class InputPortability {
 
-    private CellPhoneOperator source;
-
-    private CellPhoneOperator target;
-
-    private StatusPortability status;
+    private PortabilityResume portability;
 
     private User user;
+
 }
