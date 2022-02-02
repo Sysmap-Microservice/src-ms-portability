@@ -33,7 +33,7 @@ class PutPortabilityServiceTest {
 
     @BeforeEach
     public void setup() {
-        portabilityService = new PortabilityServiceImpl(portabilityRepository,userPortabilityProducer);
+        portabilityService = new PortabilityServiceImpl(portabilityRepository, userPortabilityProducer);
     }
 
     @Spy

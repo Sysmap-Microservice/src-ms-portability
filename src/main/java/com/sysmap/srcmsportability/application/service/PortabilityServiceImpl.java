@@ -17,7 +17,7 @@ public class PortabilityServiceImpl implements PortabilityService {
 
     private final UserPortabilityProducer userPortabilityProducer;
 
-    public PortabilityServiceImpl(PortabilityRepository portabilityRepository,UserPortabilityProducer userPortabilityProducer) {
+    public PortabilityServiceImpl(PortabilityRepository portabilityRepository, UserPortabilityProducer userPortabilityProducer) {
         this.portabilityRepository = portabilityRepository;
         this.userPortabilityProducer = userPortabilityProducer;
     }
@@ -32,7 +32,7 @@ public class PortabilityServiceImpl implements PortabilityService {
                 .user(portability.getUser())
                 .build();
         final Portability savedPortability = portabilityRepository.savePortability(response);
-        userPortabilityProducer.send( savedPortability );
+        userPortabilityProducer.send(savedPortability);
         return savedPortability;
     }
 
