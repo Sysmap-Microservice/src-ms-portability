@@ -15,28 +15,27 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserPortabilityProducerImpl
-        implements
-        UserPortabilityProducer
-{
+public class UserPortabilityProducerImpl implements UserPortabilityProducer {
+
     @Value("${topic.name.producer}")
     private String topicName;
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
-    public void send(Portability portability)
-    {
+    public void send(Portability portability) {
         final PortabilityDTO portabilityDTO = PortabilityDTO.builder()
-            .portabilityId(portability.getPortabilityId())
-            .target(portability.getTarget())
-            .source(portability.getSource())
-            .build();
+                .portabilityId(portability.getPortabilityId())
+                .target(portability.getTarget())
+                .source(portability.getSource())
+                .build();
+
         final OutputPortability outputPortability = OutputPortability.builder()
-            .number(portability.getUser().getLine().getNumber())
-            .documentNumber(portability.getUser().getDocumentNumber())
-            .portability(portabilityDTO)
-            .build();
+                .number(portability.getUser().getLine().getNumber())
+                .documentNumber(portability.getUser().getDocumentNumber())
+                .portability(portabilityDTO)
+                .build();
+
         log.info("Payload enviado {}", outputPortability);
         final Gson gson = new Gson();
         kafkaTemplate.send(topicName, gson.toJson(outputPortability));
