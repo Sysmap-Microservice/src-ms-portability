@@ -23,13 +23,13 @@ public class PortabilityServiceImpl implements PortabilityService {
     }
 
     @Override
-    public Portability createPortability(InputPortability portability) {
+    public Portability createPortability(InputPortability inputPortability) {
 
         var response = Portability.builder()
-                .source(portability.getSource())
-                .status(portability.getStatus())
-                .target(portability.getTarget())
-                .user(portability.getUser())
+                .source(inputPortability.getPortability().getSource())
+                .status(StatusPortability.PROCESSING_PORTABILITY)
+                .target(inputPortability.getPortability().getTarget())
+                .user(inputPortability.getUser())
                 .build();
         final Portability savedPortability = portabilityRepository.savePortability(response);
         userPortabilityProducer.send(savedPortability);
