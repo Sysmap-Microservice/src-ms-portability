@@ -1,4 +1,4 @@
-package com.sysmap.srcmsportability.framework.adapters.in;
+package com.sysmap.srcmsportability.framework.adapters.in.Resources;
 
 import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
 import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
@@ -42,7 +42,7 @@ public class PortabilityController {
             throw new PortabilityNotFound("Callback não recebido!");
         }
         logger.info(message);
-        return ResponseEntity.ok("Callback recebido com sucesso!");
+        return ResponseEntity.ok("Portability: Callback recebido com sucesso!");
     }
 
 }
