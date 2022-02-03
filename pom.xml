@@ -74,7 +74,7 @@
 			<version>4.2.0</version>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+    </dependencies>
 
     <build>
         <plugins>
@@ -95,7 +95,7 @@
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>1.4.13</version>
                 <configuration>
-                    <repository>andredevsysmap/${project.artifactId}</repository>
+                    <repository>sysmapmsteam/${project.artifactId}</repository>
                     <tag>${project.version}</tag>
                     <buildArgs>
                         <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
