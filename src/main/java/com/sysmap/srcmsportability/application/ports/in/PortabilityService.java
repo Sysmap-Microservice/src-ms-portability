@@ -1,7 +1,7 @@
 package com.sysmap.srcmsportability.application.ports.in;
 
-import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
-import com.sysmap.srcmsportability.application.ports.in.entities.enums.StatusPortability;
+import com.sysmap.srcmsportability.domain.Portability;
+import com.sysmap.srcmsportability.domain.enums.StatusPortability;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPortability;
 
 import java.util.UUID;

@@ -1,7 +1,7 @@
-package com.sysmap.srcmsportability.application.ports.in.entities;
+package com.sysmap.srcmsportability.domain;
 
-import com.sysmap.srcmsportability.application.ports.in.entities.enums.CellPhoneOperator;
-import com.sysmap.srcmsportability.application.ports.in.entities.enums.StatusPortability;
+import com.sysmap.srcmsportability.domain.enums.CellPhoneOperator;
+import com.sysmap.srcmsportability.domain.enums.StatusPortability;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

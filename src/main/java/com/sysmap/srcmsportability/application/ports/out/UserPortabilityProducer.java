@@ -1,6 +1,6 @@
 package com.sysmap.srcmsportability.application.ports.out;
 
-import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
+import com.sysmap.srcmsportability.domain.Portability;
 
 public interface UserPortabilityProducer {
 
