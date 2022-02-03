@@ -1,7 +1,7 @@
 package com.sysmap.srcmsportability.framework.adapters.out.persistence;
 
 import com.sysmap.srcmsportability.application.ports.out.PortabilityRepository;
-import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
+import com.sysmap.srcmsportability.domain.Portability;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

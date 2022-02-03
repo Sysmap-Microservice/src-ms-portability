@@ -1,7 +1,7 @@
 package com.sysmap.srcmsportability.framework.adapters.out.topic;
 
 import com.google.gson.Gson;
-import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
+import com.sysmap.srcmsportability.domain.Portability;
 
 import com.sysmap.srcmsportability.application.ports.out.UserPortabilityProducer;
 import com.sysmap.srcmsportability.framework.adapters.out.topic.dto.OutputPortability;

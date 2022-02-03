@@ -1,4 +1,4 @@
-package com.sysmap.srcmsportability.application.ports.in.entities.enums;
+package com.sysmap.srcmsportability.domain.enums;
 
 public enum CellPhoneOperator {
     VIVO,

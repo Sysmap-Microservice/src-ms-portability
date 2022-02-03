@@ -1,4 +1,4 @@
-package com.sysmap.srcmsportability.application.ports.in.entities;
+package com.sysmap.srcmsportability.domain;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;

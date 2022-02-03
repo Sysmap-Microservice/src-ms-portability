@@ -1,7 +1,7 @@
 package com.sysmap.srcmsportability.framework.adapters.in;
 
 import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
-import com.sysmap.srcmsportability.application.ports.in.entities.Portability;
+import com.sysmap.srcmsportability.domain.Portability;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPortability;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPutStatus;
 import lombok.RequiredArgsConstructor;
