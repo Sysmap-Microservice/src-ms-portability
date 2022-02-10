@@ -6,7 +6,7 @@ import com.sysmap.srcmsportability.domain.enums.CellPhoneOperator;
 import com.sysmap.srcmsportability.domain.enums.StatusPortability;
 import com.sysmap.srcmsportability.application.ports.out.PortabilityRepository;
 import com.sysmap.srcmsportability.application.ports.out.UserPortabilityProducer;
-import com.sysmap.srcmsportability.domain.entities.exceptions.PortabilityNotFound;
+import com.sysmap.srcmsportability.framework.adapters.in.exceptions.PortabilityNotFound;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,9 +60,7 @@ class PutPortabilityServiceTest {
 
         when(portabilityRepository.findPortabilityById(portabilityId)).thenReturn(Optional.empty());
 
-        assertThrows(PortabilityNotFound.class, () -> {
-            portabilityService.putStatusPortability(portabilityId, StatusPortability.PORTED);
-        });
+        assertThrows(PortabilityNotFound.class, () -> portabilityService.putStatusPortability(portabilityId, StatusPortability.PORTED));
     }
 
 }
