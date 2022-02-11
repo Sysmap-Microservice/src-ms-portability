@@ -28,11 +28,10 @@ public class PortabilityServiceImpl implements PortabilityService {
     @Override
     public Portability createPortability(InputPortability inputPortability) {
 
-        ModelMapper modelMapper = new ModelMapper();
-        User user = modelMapper.map(inputPortability.getUser(), User.class);
-
-        String sourceInput = inputPortability.getPortability().getSource();
-        String targetInput = inputPortability.getPortability().getTarget();
+        final ModelMapper modelMapper = new ModelMapper();
+        final User user = modelMapper.map(inputPortability.getUser(), User.class);
+        final String sourceInput = inputPortability.getPortability().getSource();
+        final String targetInput = inputPortability.getPortability().getTarget();
 
         var response = Portability
                 .builder()
@@ -41,6 +40,7 @@ public class PortabilityServiceImpl implements PortabilityService {
                 .status(StatusPortability.PROCESSING_PORTABILITY)
                 .user(user)
                 .build();
+
         final Portability savedPortability = portabilityRepository.savePortability(response);
         userPortabilityProducer.send(savedPortability);
         return savedPortability;
