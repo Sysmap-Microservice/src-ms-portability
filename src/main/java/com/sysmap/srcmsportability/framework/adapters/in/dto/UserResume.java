@@ -14,23 +14,23 @@ import javax.validation.constraints.Size;
 public class UserResume {
 
     @Valid
-    @NotNull(message = "A LINHA DEVE SER PREENCHIDA")
+    @NotNull(message = "The line information cannot be null and must be filled in.")
     @OneToOne(cascade = CascadeType.PERSIST)
     private LineInformationResume line;
 
     @Valid
-    @NotNull(message = "O ENDEREÇO DEVE SER PREENCHIDO")
+    @NotNull(message = "The address information cannot be null and must be filled in.")
     @OneToOne(cascade = CascadeType.PERSIST)
     private AddressResume address;
 
-    @NotBlank(message = "O NOME NÃO PODE FICAR VAZIO")
-    @Size(min = 3, max=80, message = "NOME DEVE TER NO MIN=3 MAX=80 CARACTERES")
+    @NotBlank(message = "The user name must be filled in and cannot be null or blank.")
+    @Size(min = 3, max=80, message = "The name field must contain between 3 and 80 characters.")
     private String name;
 
-    @CheckDateOfBirthValidator(message = "A DATA DE ANIVERSARIO DEVE ESTAR NO PASSADO E NO PADRÃO DD/MM/YYYY")
+    @CheckDateOfBirthValidator(message = "The date of birth must be in 'yyyy-mm-dd' format and must be in the past.")
     private String dateOfBirth;
 
-    @NotBlank(message = "DOCUMENTO DEVE SER PREENCHIDO")
-    @Size(min = 9, max = 11, message = "O NÚMERO DO DOCUMENTO DEVE CONTER ENTRE 9 E 11 DÍGITOS")
+    @NotBlank(message = "The document number must be filled in and cannot be null or blank.")
+    @Size(min = 9, max = 11, message = "The document number must contain just 12 characters. ")
     private String documentNumber;
 }

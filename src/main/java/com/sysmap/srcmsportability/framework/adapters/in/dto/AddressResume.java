@@ -7,14 +7,14 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class AddressResume {
 
-    @NotBlank(message = "A RUA DEVE SER PREENCHIDA")
+    @NotBlank(message = "Street must be filled in and cannot be null or blank.")
     private String street;
-    @NotBlank(message = "O NÚMERO DO ENDEREÇO DEVE SER PREENCHIDO")
+    @NotBlank(message = "Address number must be filled in and cannot be null or blank.")
     private String number;
-    @NotBlank(message = "A CIDADE DEVE SER PREENCHIDA")
+    @NotBlank(message = "City must be filled in and cannot be null or blank.")
     private String city;
-    @NotBlank(message = "O PAÍS DEVE SER PREENCHIDO")
+    @NotBlank(message = "Country must be filled in and cannot be null or blank.")
     private String country;
-    @NotBlank(message = "O ESTADO DEVE SER PREENCHIDO")
+    @NotBlank(message = "State or Region must be filled in and cannot be null or blank.")
     private String stateOrRegion;
 }

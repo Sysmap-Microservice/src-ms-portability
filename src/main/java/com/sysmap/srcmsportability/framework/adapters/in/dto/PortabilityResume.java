@@ -7,12 +7,14 @@ import lombok.Data;
 @Data
 public class PortabilityResume {
 
-    @CellPhoneOperatorSourceValidator(message = "SOMENTE É PERMITIDA A PORTABILIDADE À PARTIR DA OPERADORA VIVO. "
-            + "VALORES NULOS OU EM BRANCO NÃO SÃO PERMITIDOS!")
+    @CellPhoneOperatorSourceValidator(message =
+            "Portability is only allowed from the phone operator Vivo. " +
+            "Null or blank values are not allowed.")
     private String source;
 
     @CellPhoneOperatorTargetValidator(acceptedValues = {"TIM", "CLARO", "OI", "NEXTEL"},
-            message = "SOMENTE É PERMITIDA A PORTABILIDADE PARA AS OPERADORAS OI, TIM, CLARO E NEXTEL! VALORES NULOS OU EM BRANCO NÃO SÃO PERMITIDOS!")
+            message = "Null, empty or blank values are not allowed and only the following phone operators " +
+                    "are allowed as a destination (target): Oi, Tim, Claro e Nextel.")
     private String target;
 
 }

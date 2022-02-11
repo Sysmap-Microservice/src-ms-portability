@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 @Data
 public class LineInformationResume {
 
-    @NotBlank(message = "O NÚMERO DA OPERADORA ATUAL DEVE SER PREENCHIDO")
-    @Size(min = 9, max = 11, message = "O NUMERO DA OPERADORA ATUAL DEVE CONTER ENTRE 9 E 11 DÍGITOS")
+    @NotBlank(message = "Current phone number must be filled in and cannot be null or blank.")
+    @Size(min = 9, max = 11, message = "Current phone number must contain between 9 and 11 digits (without special characters).")
     private String number;
 }

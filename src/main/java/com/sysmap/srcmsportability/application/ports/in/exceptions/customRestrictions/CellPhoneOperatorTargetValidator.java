@@ -10,9 +10,9 @@ import java.lang.annotation.*;
 @Documented
 public @interface CellPhoneOperatorTargetValidator {
 
-    String[] acceptedValues() default "{com.sysmap.srcmsportability.application.ports.in.exceptions.customRestrictions.CellPhoneOperatorTargetValidator.acceptedValues}";
+    String[] acceptedValues() default "";
 
-    String message() default "{com.sysmap.srcmsportability.application.ports.in.exceptions.customRestrictions.CellPhoneOperatorTargetValidator.message}";
+    String message() default "";
 
     Class<?>[] groups() default {};
 

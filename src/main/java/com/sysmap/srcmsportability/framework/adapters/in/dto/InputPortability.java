@@ -9,11 +9,11 @@ import javax.validation.constraints.NotNull;
 public class InputPortability {
 
     @Valid
-    @NotNull(message = "A PORTABILIDADE NÃO PODE SER NULA")
+    @NotNull(message = "Portability data cannot be null.")
     private PortabilityResume portability;
 
     @Valid
-    @NotNull(message = "O USUÁRIO NÃO PODE SER NULO")
+    @NotNull(message = "User data cannot be null.")
     private UserResume user;
 
 }
