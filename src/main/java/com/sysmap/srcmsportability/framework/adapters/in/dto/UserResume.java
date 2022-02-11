@@ -31,6 +31,6 @@ public class UserResume {
     private String dateOfBirth;
 
     @NotBlank(message = "The document number must be filled in and cannot be null or blank.")
-    @Size(min = 9, max = 11, message = "The document number must contain just 12 characters. ")
+    @Size(min = 12, max = 12, message = "The document number must contain just 12 characters. ")
     private String documentNumber;
 }

@@ -35,4 +35,8 @@ public class User {
     private LocalDate dateOfBirth;
 
     private String documentNumber;
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = LocalDate.parse(dateOfBirth);
+    }
 }
