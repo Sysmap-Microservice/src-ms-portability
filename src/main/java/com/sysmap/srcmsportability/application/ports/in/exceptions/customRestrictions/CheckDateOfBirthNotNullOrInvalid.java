@@ -2,16 +2,13 @@ package com.sysmap.srcmsportability.application.ports.in.exceptions.customRestri
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CheckDateOfBirthNotNullOrInvalid implements ConstraintValidator<CheckDateOfBirthValidator, String> {
-
-    private SimpleDateFormat dateTimeFormatter;
 
     @Override
     public void initialize(CheckDateOfBirthValidator constraintAnnotation) {
@@ -23,28 +20,26 @@ public class CheckDateOfBirthNotNullOrInvalid implements ConstraintValidator<Che
         if (dateOfBirth == null || dateOfBirth.isEmpty() || dateOfBirth.isBlank())
             return false;
 
-        Date convertedDate = convertToDate(dateOfBirth);
+        final LocalDate convertedDate = convertToDate(dateOfBirth);
 
         if (convertedDate == null)
             return false;
-        return convertedDate.before(Date.from(Instant.now()));
+        return convertedDate.isBefore(LocalDate.now(ZoneId.of("America/Sao_Paulo")));
     }
 
-    private static Date convertToDate(String dateOfBirth) {
-        String regexDateFormat = "(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/((?:19|20)[0-9][0-9])"; // dd/MM/yyyy
-        Pattern pattern = Pattern.compile(regexDateFormat);
-        Matcher matcher = pattern.matcher(dateOfBirth);
+    private static LocalDate convertToDate(String dateOfBirth) {
+        final String regexDateFormat = "((?:19|20)[0-9][0-9])-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])"; // yyyy-MM-dd
+        final Pattern pattern = Pattern.compile(regexDateFormat);
+        final Matcher matcher = pattern.matcher(dateOfBirth);
 
         if (!matcher.matches()) {
             return null;
         }
-
-        Date date = null;
+        LocalDate localDate = null;
         try {
-            date = new SimpleDateFormat("dd/MM/yyyy").parse(dateOfBirth);
-        } catch (ParseException e) {
-            e.printStackTrace();
+            localDate = LocalDate.parse(dateOfBirth);
+        } catch (DateTimeParseException e) {
         }
-        return date;
+        return localDate;
     }
 }
