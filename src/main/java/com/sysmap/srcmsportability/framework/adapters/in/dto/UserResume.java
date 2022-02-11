@@ -31,6 +31,6 @@ public class UserResume {
     private String dateOfBirth;
 
     @NotBlank(message = "DOCUMENTO DEVE SER PREENCHIDO")
-    @Size(min = 9, max = 11, message = "O NÚMERO DO DOCUMENTO DEVE CONTER ENTRE 9 E 11 DÍGITOS")
+    @Size(min = 12, max = 12, message = "O NÚMERO DO DOCUMENTO DEVE CONTER ENTRE 9 E 11 DÍGITOS")
     private String documentNumber;
 }
