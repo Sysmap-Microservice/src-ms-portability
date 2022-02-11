@@ -1,4 +1,4 @@
-package com.sysmap.srcmsportability.application.ports.in.exceptions;
+package com.sysmap.srcmsportability.framework.adapters.in.exceptions;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
