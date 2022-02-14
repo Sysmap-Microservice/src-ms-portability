@@ -2,6 +2,7 @@ package com.sysmap.srcmsportability.framework.adapters.in.dto;
 
 import com.sysmap.srcmsportability.application.ports.in.exceptions.customRestrictions.CheckDateOfBirthValidator;
 import lombok.Data;
+import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.CascadeType;
 import javax.persistence.OneToOne;
@@ -31,6 +32,6 @@ public class UserResume {
     private String dateOfBirth;
 
     @NotBlank(message = "The document number must be filled in and cannot be null or blank.")
-    @Size(min = 12, max = 12, message = "The document number must contain just 12 characters. ")
+    @CPF(message = "The document number must be a valid CPF number (Brazilian document).")
     private String documentNumber;
 }
