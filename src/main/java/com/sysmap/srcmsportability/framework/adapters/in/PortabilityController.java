@@ -31,14 +31,12 @@ public class PortabilityController {
 
     @PutMapping("/portability/{portabilityId}")
     public ResponseEntity<String> putStatusPortability(@RequestBody InputPutStatus inputPutStatus,
-                                                     @PathVariable UUID portabilityId, String message) {
+                                                     @PathVariable UUID portabilityId) {
 
         portabilityService.putStatusPortability(portabilityId, inputPutStatus.getStatus());
 
-        if(message == null || message.isEmpty()){
-            logger.warn("Callback não recebido!");
-            throw new PortabilityNotFound("Portabilidade não concluida!");
-        }
+        var message = "SignPortability: A portabilidade " + portabilityId + " foi concluida com sucesso! Novo status: "
+                + inputPutStatus.getStatus();
         logger.info(message);
         return ResponseEntity.ok("Portability: Callback recebido com sucesso!");
     }
