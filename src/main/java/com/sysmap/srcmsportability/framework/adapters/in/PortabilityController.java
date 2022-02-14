@@ -32,9 +32,10 @@ public class PortabilityController {
     @PutMapping("/portability/{portabilityId}")
     public ResponseEntity<String> putStatusPortability(@RequestBody InputPutStatus inputPutStatus,
                                                      @PathVariable UUID portabilityId, String message) {
+
         portabilityService.putStatusPortability(portabilityId, inputPutStatus.getStatus());
 
-        if(message.isEmpty()){
+        if(message == null || message.isEmpty()){
             logger.warn("Callback não recebido!");
             throw new PortabilityNotFound("Portabilidade não concluida!");
         }
