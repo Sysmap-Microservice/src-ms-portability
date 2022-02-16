@@ -19,3 +19,10 @@ services:
 
 And, into the folder that was created the docker-compose.yaml file, run the following command (Terminal or CMD):
 > docker-compose up
+
+### Run the project from IDE with Maven
+To run the application from the IDE you will need to run with the `-DskipTests` Maven parameter, just like this:
+> mvn clean install -DskipTests
+
+Without this, the application will return a error like:
+` There are test failures. Please refer to D:\Java_study\springboot\springboot-sugon-3\target\surefire-reports for the individual test results.`
