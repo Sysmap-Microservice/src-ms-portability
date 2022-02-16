@@ -1,11 +1,13 @@
 package com.sysmap.srcmsportability.framework.adapters.in.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Data
+@AllArgsConstructor
 public class LineInformationResume {
 
     @NotBlank(message = "Current phone number must be filled in and cannot be null or blank.")

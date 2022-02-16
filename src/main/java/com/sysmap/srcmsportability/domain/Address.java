@@ -1,6 +1,8 @@
 package com.sysmap.srcmsportability.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -8,6 +10,8 @@ import java.util.UUID;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tb_address")
 public class Address {
 

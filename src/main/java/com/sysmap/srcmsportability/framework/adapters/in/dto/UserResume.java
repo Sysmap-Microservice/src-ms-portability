@@ -1,6 +1,7 @@
 package com.sysmap.srcmsportability.framework.adapters.in.dto;
 
 import com.sysmap.srcmsportability.application.ports.in.exceptions.customRestrictions.CheckDateOfBirthValidator;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
+@AllArgsConstructor
 public class UserResume {
 
     @Valid

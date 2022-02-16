@@ -1,23 +1,22 @@
 package com.sysmap.srcmsportability.framework.adapters.in;
 
 import com.sysmap.srcmsportability.SrcMsPortabilityApplication;
-import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
+import com.sysmap.srcmsportability.framework.adapters.in.dto.*;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
 
-import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 
@@ -28,152 +27,203 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 class PostPortabilityControllerTest {
 
-    @MockBean
-    private PortabilityService portabilityService;
-
     @Autowired
-    private MockMvc mockMvc;
+    private Validator validator;
 
     @Test
-    public void verifyIfReturnsOkToCorrectInformedInTheActivity() throws Exception {
-        this.makeRequest(this.jsonWithAllInformation());
-    }
+    public void verifyIfNoErrorsMessagesAreReturned() throws Exception {
+        final LineInformationResume lineInformation = getLineInformation("987654321");
+        final AddressResume address = getAddress("street", "number", "city", "country", "region");
+        final UserResume user = getUser(lineInformation, address, "name", getStringPastDate(), "38894585212");
+        final PortabilityResume portabilityResume = getPortabilityResume("VIVO","CLARO");
+        final InputPortability inputPortability = getInputPortability(portabilityResume, user);
 
-    @Test
-    public void verifyIfReturnsOkWithoutUser() throws Exception {
-        this.makeRequest(this.jsonWithoutUser());
-    }
-
-    @Test
-    public void verifyIfReturnsOkWithoutPortability() throws Exception {
-        this.makeRequest(this.jsonWithoutPortability());
+        final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
+        assertTrue(violations.isEmpty());
     }
 
     @Test
-    public void verifyIfReturnsOkWithoutLineInformation() throws Exception {
-        this.makeRequest(this.jsonWithoutLineInformation());
+    public void verifyIfReturnsErrorMessageWithNullUser() throws Exception {
+        final UserResume userResume = null;
+        final PortabilityResume portabilityResume = getPortabilityResume("VIVO","CLARO");
+        final InputPortability inputPortability = getInputPortability(portabilityResume, userResume);
+
+        final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
+        assertFalse(violations.isEmpty());
+        final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
+        assertEquals("User data cannot be null.", violation.getMessage());
     }
 
     @Test
-    public void verifyIfReturnsOkWithoutAddress() throws Exception {
-        this.makeRequest(this.jsonWithoutAddressInformation());
+    public void verifyIfReturnsErrorMessageWithNullPortabilityResume() throws Exception {
+        final LineInformationResume lineInformation = getLineInformation("987654321");
+        final AddressResume address = getAddress("street", "number", "city", "country", "region");
+        final UserResume user = getUser(lineInformation, address, "name", getStringPastDate(), "38894585212");
+        final PortabilityResume portabilityResume = null;
+        final InputPortability inputPortability = getInputPortability(portabilityResume, user);
+
+        final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
+        assertFalse(violations.isEmpty());
+        final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
+        assertEquals("Portability data cannot be null.", violation.getMessage());
     }
 
     @Test
-    public void verifyIfReturnsOkEmptyJson() throws Exception {
-        RequestBuilder requestBuilder = post("/ms-src-portability/v1/portability")
-                .accept(MediaType.APPLICATION_JSON)
-                .content("")
-                .contentType(MediaType.APPLICATION_JSON);
+    public void verifyIfReturnsErrorMessageWithNullUserName() throws Exception {
+        final LineInformationResume lineInformation = getLineInformation("987654321");
+        final AddressResume address = getAddress("street", "number", "city", "country", "region");
+        final UserResume user = getUser(lineInformation, address, null, getStringPastDate(), "38894585212");
+        final PortabilityResume portabilityResume = getPortabilityResume("VIVO","CLARO");
+        final InputPortability inputPortability = getInputPortability(portabilityResume, user);
 
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-        MockHttpServletResponse response = result.getResponse();
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+        final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
+        assertFalse(violations.isEmpty());
+        final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
+        assertEquals("The user name must be filled in and cannot be null or blank.", violation.getMessage());
     }
 
-    // Novo possível cenário -> se der erro ao cadastrar posso publicar no kafka ?
+    @Test
+    public void verifyIfReturnsErrorMessagetWithEmptyDocumentNumber() throws Exception {
+        final LineInformationResume lineInformation = getLineInformation("987654321");
+        final AddressResume address = getAddress("street", "number", "city", "country", "region");
+        final UserResume user = getUser(lineInformation, address, "name", getStringPastDate(), "");
+        final PortabilityResume portabilityResume = getPortabilityResume("VIVO","CLARO");
+        final InputPortability inputPortability = getInputPortability(portabilityResume, user);
 
-    private void makeRequest(String json) throws Exception {
-//        Mockito.when(portabilityService.createPortability(Mockito.any(InputPortability.class))).thenReturn(Mockito.any(Portability.class));
-        RequestBuilder requestBuilder = post("/ms-src-portability/v1/portability")
-                .accept(MediaType.APPLICATION_JSON)
-                .content(json)
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-        MockHttpServletResponse response = result.getResponse();
-        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
+        assertFalse(violations.isEmpty());
+        final List<String> sViolations = getErrorMessageViolations(violations);
+        assertTrue(sViolations.contains("The document number must be filled in and cannot be null or blank."));
     }
 
-    private String jsonWithAllInformation() {
-        return "{\n" +
-                "   \"user\":{\n" +
-                "      \"line\":{\n" +
-                "         \"number\":\"999999999\"\n" +
-                "      },\n" +
-                "      \"address\":{\n" +
-                "         \"street\":\"XXXXX\",\n" +
-                "         \"number\":\"XXXXX\",\n" +
-                "         \"city\":\"XXXXX\",\n" +
-                "         \"country\":\"XXXXX\",\n" +
-                "         \"stateOrRegion\":\"XXXX\"\n" +
-                "      },\n" +
-                "      \"name\":\"Jose da Silva\",\n" +
-                "      \"dateOfBirth\":\"1970-01-01\",\n" +
-                "      \"documentNumber\":\"441558478995\"\n" +
-                "   },\n" +
-                "   \"portability\":{\n" +
-                "      \"source\":\"VIVO\",\n" +
-                "      \"target\":\"CLARO\"\n" +
-                "   }\n" +
-                "}";
+    @Test
+    public void verifyIfReturnsErrorMessageWithNullLineNumber() throws Exception{
+        final LineInformationResume lineInformation = getLineInformation(null);
+        final AddressResume address = getAddress("street", "number", "city", "country", "region");
+        final UserResume user = getUser(lineInformation, address, "name", getStringPastDate(), "38894585212");
+        final PortabilityResume portabilityResume = getPortabilityResume("VIVO","CLARO");
+        final InputPortability inputPortability = getInputPortability(portabilityResume, user);
+
+        final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
+        assertFalse(violations.isEmpty());
+        final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
+        assertEquals("Current phone number must be filled in and cannot be null or blank.", violation.getMessage());
     }
 
-    private String jsonWithoutUser() {
+    @Test
+    public void verifyIfReturnsErrorMessageWithWrongSizeLineNumber() throws Exception{
+        final LineInformationResume lineInformation = getLineInformation("123456");
+        final AddressResume address = getAddress("street", "number", "city", "country", "region");
+        final UserResume user = getUser(lineInformation, address, "name", getStringPastDate(), "38894585212");
+        final PortabilityResume portabilityResume = getPortabilityResume("VIVO","CLARO");
+        final InputPortability inputPortability = getInputPortability(portabilityResume, user);
 
-        return "{\n" +
-                "   \"portability\":{\n" +
-                "      \"source\":\"VIVO\",\n" +
-                "      \"target\":\"CLARO\"\n" +
-                "   }\n" +
-                "}";
+        final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
+        assertFalse(violations.isEmpty());
+        final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
+        assertEquals("Current phone number must contain between 9 and 11 digits (without special characters).", violation.getMessage());
     }
 
-    private String jsonWithoutPortability() {
-        return "{\n" +
-                "   \"user\":{\n" +
-                "      \"line\":{\n" +
-                "         \"number\":\"999999999\"\n" +
-                "      },\n" +
-                "      \"address\":{\n" +
-                "         \"street\":\"XXXXX\",\n" +
-                "         \"number\":\"XXXXX\",\n" +
-                "         \"city\":\"XXXXX\",\n" +
-                "         \"country\":\"XXXXX\",\n" +
-                "         \"stateOrRegion\":\"XXXX\"\n" +
-                "      },\n" +
-                "      \"name\":\"Jose da Silva\",\n" +
-                "      \"dateOfBirth\":\"1970-01-01\",\n" +
-                "      \"documentNumber\":\"441558478995\"\n" +
-                "   }\n" +
-                "}";
+    @Test
+    public void verifyIfReturnsErrorMessageWithNullAddress() throws Exception{
+        final LineInformationResume lineInformation = getLineInformation("123456789");
+        final AddressResume address = null;
+        final UserResume user = getUser(lineInformation, address, "name", getStringPastDate(), "38894585212");
+        final PortabilityResume portabilityResume = getPortabilityResume("VIVO","CLARO");
+        final InputPortability inputPortability = getInputPortability(portabilityResume, user);
+
+        final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
+        assertFalse(violations.isEmpty());
+        final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
+        assertEquals("The address information cannot be null and must be filled in.", violation.getMessage());
     }
 
-    private String jsonWithoutLineInformation() {
-        return "{\n" +
-                "   \"user\":{\n" +
-                "      \"address\":{\n" +
-                "         \"street\":\"XXXXX\",\n" +
-                "         \"number\":\"XXXXX\",\n" +
-                "         \"city\":\"XXXXX\",\n" +
-                "         \"country\":\"XXXXX\",\n" +
-                "         \"stateOrRegion\":\"XXXX\"\n" +
-                "      },\n" +
-                "      \"name\":\"Jose da Silva\",\n" +
-                "      \"dateOfBirth\":\"1970-01-01\",\n" +
-                "      \"documentNumber\":\"441558478995\"\n" +
-                "   },\n" +
-                "   \"portability\":{\n" +
-                "      \"source\":\"VIVO\",\n" +
-                "      \"target\":\"CLARO\"\n" +
-                "   }\n" +
-                "}";
+    @Test
+    public void verifyIfReturnsErrorMessageWithWrongBirthOfDate() throws Exception{
+        final LineInformationResume lineInformation = getLineInformation("123456789");
+        final AddressResume address = getAddress("street", "number", "city", "country", "region");
+        final UserResume user = getUser(lineInformation, address, "name", getStringFutureDate(), "38894585212");
+        final PortabilityResume portabilityResume = getPortabilityResume("VIVO","CLARO");
+        final InputPortability inputPortability = getInputPortability(portabilityResume, user);
+
+        final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
+        assertFalse(violations.isEmpty());
+        final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
+        assertEquals("The date of birth must be in 'yyyy-mm-dd' format and must be in the past.", violation.getMessage());
     }
 
-    private String jsonWithoutAddressInformation() {
-        return "{\n" +
-                "   \"user\":{\n" +
-                "      \"line\":{\n" +
-                "         \"number\":\"999999999\"\n" +
-                "      },\n" +
-                "      \"name\":\"Jose da Silva\",\n" +
-                "      \"dateOfBirth\":\"1970-01-01\",\n" +
-                "      \"documentNumber\":\"441558478995\"\n" +
-                "   },\n" +
-                "   \"portability\":{\n" +
-                "      \"source\":\"VIVO\",\n" +
-                "      \"target\":\"CLARO\"\n" +
-                "   }\n" +
-                "}";
+    @Test
+    public void verifyIfReturnsErrorMessageWithNullSourceOperator() throws Exception{
+        final LineInformationResume lineInformation = getLineInformation("123456789");
+        final AddressResume address = getAddress("street", "number", "city", "country", "region");
+        final UserResume user = getUser(lineInformation, address, "name", getStringPastDate(), "38894585212");
+        final PortabilityResume portabilityResume = getPortabilityResume(null,"CLARO");
+        final InputPortability inputPortability = getInputPortability(portabilityResume, user);
+
+        final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
+        assertFalse(violations.isEmpty());
+        final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
+        assertEquals("Portability is only allowed from the phone operator Vivo. Null or blank values are not allowed.", violation.getMessage());
+    }
+
+    @Test
+    public void verifyIfReturnsErrorMessageWithEmptyTargetOperator() throws Exception{
+        final LineInformationResume lineInformation = getLineInformation("123456789");
+        final AddressResume address = getAddress("street", "number", "city", "country", "region");
+        final UserResume user = getUser(lineInformation, address, "name", getStringPastDate(), "38894585212");
+        final PortabilityResume portabilityResume = getPortabilityResume("VIVO","");
+        final InputPortability inputPortability = getInputPortability(portabilityResume, user);
+
+        final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
+        assertFalse(violations.isEmpty());
+        final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
+        assertEquals("Null, empty or blank values are not allowed and only the following phone operators are allowed as a destination (target): Oi, Tim, Claro e Nextel.", violation.getMessage());
+    }
+
+    @Test
+    public void verifyIfReturnsErrorMessageWithWrongOperators() throws Exception{
+        final LineInformationResume lineInformation = getLineInformation("123456789");
+        final AddressResume address = getAddress("street", "number", "city", "country", "region");
+        final UserResume user = getUser(lineInformation, address, "name", getStringPastDate(), "38894585212");
+        final PortabilityResume portabilityResume = getPortabilityResume("OPERADORA_NAO_EXISTE","OPERADORA_NAO_EXISTE");
+        final InputPortability inputPortability = getInputPortability(portabilityResume, user);
+
+        final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
+        assertFalse(violations.isEmpty());
+        final List<String> sViolations = getErrorMessageViolations(violations);
+        assertTrue(sViolations.contains( "Portability is only allowed from the phone operator Vivo. Null or blank values are not allowed."));
+        assertTrue(sViolations.contains("Null, empty or blank values are not allowed and only the following phone operators are allowed as a destination (target): Oi, Tim, Claro e Nextel."));
+    }
+
+    private static List<String> getErrorMessageViolations(Set<ConstraintViolation<InputPortability>> violations) {
+        return violations.stream().map(violation -> violation.getMessage()).collect(Collectors.toList());
+    }
+
+    private InputPortability getInputPortability(PortabilityResume portabilityResume, UserResume user) {
+        return new InputPortability(portabilityResume, user);
+    }
+
+    private PortabilityResume getPortabilityResume(String source, String target) {
+        return new PortabilityResume( source, target);
+    }
+
+    private UserResume getUser(com.sysmap.srcmsportability.framework.adapters.in.dto.LineInformationResume lineInformationResume, AddressResume address, String name, String sDate, String documentNumber) {
+        return new UserResume(lineInformationResume, address, name, sDate, documentNumber);
+    }
+
+    private AddressResume getAddress(String street, String number, String city, String country, String stateOrRegion) {
+        return new AddressResume(street, number, city, country, stateOrRegion);
+    }
+
+    private LineInformationResume getLineInformation(String number) {
+        return new LineInformationResume(number);
+    }
+
+    private static String getStringFutureDate() {
+        return LocalDate.now().plusYears(1).toString();
+    }
+
+    private static String getStringPastDate() {
+        return LocalDate.now().minusYears(1).toString();
     }
 }
