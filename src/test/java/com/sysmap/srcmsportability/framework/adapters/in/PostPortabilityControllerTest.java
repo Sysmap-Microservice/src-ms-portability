@@ -1,6 +1,5 @@
 package com.sysmap.srcmsportability.framework.adapters.in;
 
-import com.google.gson.Gson;
 import com.sysmap.srcmsportability.SrcMsPortabilityApplication;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.*;
 import org.apache.logging.log4j.util.Strings;
@@ -10,24 +9,16 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @RunWith(SpringRunner.class)
 
@@ -37,12 +28,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 )
 @AutoConfigureMockMvc
 class PostPortabilityControllerTest {
-
-    @Autowired
-    private Gson gson;
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Autowired
     private Validator validator;
@@ -58,24 +43,12 @@ class PostPortabilityControllerTest {
     private PortabilityResume portabilityResume;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         lineInformationResume = new LineInformationResume("987654321");
         addressResume =  new AddressResume("street", "number", "city", "country", "region");
         userResume = new UserResume(lineInformationResume, addressResume, "name", getStringPastDate(), "38894585212");
         portabilityResume  = new PortabilityResume("VIVO","CLARO");
         inputPortability = new InputPortability(portabilityResume, userResume);
-    }
-
-    @Test
-    void shouldCreatePortability() throws Exception {
-        RequestBuilder requestBuilder = post(new URI("/ms-src-portability/v1/portability"))
-                .accept(MediaType.APPLICATION_JSON)
-                .content(gson.toJson(inputPortability))
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-        MockHttpServletResponse response = result.getResponse();
-        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
     }
 
     @Test

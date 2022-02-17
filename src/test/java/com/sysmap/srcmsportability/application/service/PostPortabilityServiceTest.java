@@ -42,7 +42,7 @@ public class PostPortabilityServiceTest {
     private Portability portability;
 
     @BeforeEach
-    public void setUpDtoAndModelObjects() {
+    void setUpDtoAndModelObjects() {
         this.service = new PortabilityServiceImpl(repository, producer);
 
         final LocalDate dateBirth = LocalDate.now().minusYears(18);
@@ -60,7 +60,7 @@ public class PostPortabilityServiceTest {
 
     @Test
     @DisplayName("Should create successfully a new portability")
-    public void shouldCreatePortabilitySuccessfully() {
+    void shouldCreatePortabilitySuccessfully() {
 
         when(repository.savePortability(any())).thenReturn(portability);
 
