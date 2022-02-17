@@ -1,5 +1,6 @@
 package com.sysmap.srcmsportability.framework.adapters.in;
 
+import com.google.gson.Gson;
 import com.sysmap.srcmsportability.SrcMsPortabilityApplication;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.*;
 import org.apache.logging.log4j.util.Strings;
@@ -9,16 +10,24 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @RunWith(SpringRunner.class)
 
@@ -30,38 +39,55 @@ import static org.junit.jupiter.api.Assertions.*;
 class PostPortabilityControllerTest {
 
     @Autowired
+    private Gson gson;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
     private Validator validator;
 
     private InputPortability inputPortability;
 
-    private LineInformationResume lineInformation;
+    private LineInformationResume lineInformationResume;
 
-    private AddressResume address;
+    private AddressResume addressResume;
 
-    private UserResume user;
+    private UserResume userResume;
 
     private PortabilityResume portabilityResume;
 
     @BeforeEach
     public void setUp() {
-        lineInformation  = getLineInformation("987654321");
-        address  = getAddress("street", "number", "city", "country", "region");
-        user  = getUser(lineInformation, address, "name", getStringPastDate(), "38894585212");
-        portabilityResume  = getPortabilityResume("VIVO","CLARO");
-        inputPortability = getInputPortability(portabilityResume, user);
+        lineInformationResume = new LineInformationResume("987654321");
+        addressResume =  new AddressResume("street", "number", "city", "country", "region");
+        userResume = new UserResume(lineInformationResume, addressResume, "name", getStringPastDate(), "38894585212");
+        portabilityResume  = new PortabilityResume("VIVO","CLARO");
+        inputPortability = new InputPortability(portabilityResume, userResume);
     }
 
     @Test
-    public void verifyIfNoErrorsMessagesAreReturned() throws Exception {
+    void shouldCreatePortability() throws Exception {
+        RequestBuilder requestBuilder = post(new URI("/ms-src-portability/v1/portability"))
+                .accept(MediaType.APPLICATION_JSON)
+                .content(gson.toJson(inputPortability))
+                .contentType(MediaType.APPLICATION_JSON);
 
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = result.getResponse();
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+    }
+
+    @Test
+    void verifyIfNoErrorsMessagesAreReturned() throws Exception {
         final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
         assertTrue(violations.isEmpty());
     }
 
     @Test
-    public void verifyIfReturnsErrorMessageWithNullUser() throws Exception {
-
+    void verifyIfReturnsErrorMessageWithNullUser() throws Exception {
         inputPortability.setUser(null);
+
         final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
         assertFalse(violations.isEmpty());
         final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
@@ -69,9 +95,9 @@ class PostPortabilityControllerTest {
     }
 
     @Test
-    public void verifyIfReturnsErrorMessageWithNullPortabilityResume() throws Exception {
-
+    void verifyIfReturnsErrorMessageWithNullPortabilityResume() throws Exception {
         inputPortability.setPortability(null);
+
         final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
         assertFalse(violations.isEmpty());
         final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
@@ -79,9 +105,9 @@ class PostPortabilityControllerTest {
     }
 
     @Test
-    public void verifyIfReturnsErrorMessageWithNullUserName() throws Exception {
+    void verifyIfReturnsErrorMessageWithNullUserName() throws Exception {
+        userResume.setName(null);
 
-        user.setName(null);
         final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
         assertFalse(violations.isEmpty());
         final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
@@ -89,9 +115,9 @@ class PostPortabilityControllerTest {
     }
 
     @Test
-    public void verifyIfReturnsErrorMessagetWithEmptyDocumentNumber() throws Exception {
+    void verifyIfReturnsErrorMessagetWithEmptyDocumentNumber() throws Exception {
+        userResume.setDocumentNumber(Strings.EMPTY);
 
-        user.setDocumentNumber(Strings.EMPTY);
         final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
         assertFalse(violations.isEmpty());
         final List<String> sViolations = getErrorMessageViolations(violations);
@@ -99,9 +125,9 @@ class PostPortabilityControllerTest {
     }
 
     @Test
-    public void verifyIfReturnsErrorMessageWithNullLineNumber() throws Exception{
+    void verifyIfReturnsErrorMessageWithNullLineNumber() throws Exception{
+        lineInformationResume.setNumber(null);
 
-        lineInformation.setNumber(null);
         final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
         assertFalse(violations.isEmpty());
         final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
@@ -109,9 +135,9 @@ class PostPortabilityControllerTest {
     }
 
     @Test
-    public void verifyIfReturnsErrorMessageWithWrongSizeLineNumber() throws Exception{
+    void verifyIfReturnsErrorMessageWithWrongSizeLineNumber() throws Exception{
+        lineInformationResume.setNumber("123456");
 
-        lineInformation.setNumber("123456");
         final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
         assertFalse(violations.isEmpty());
         final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
@@ -119,9 +145,9 @@ class PostPortabilityControllerTest {
     }
 
     @Test
-    public void verifyIfReturnsErrorMessageWithNullAddress() throws Exception{
+    void verifyIfReturnsErrorMessageWithNullAddress() throws Exception{
+        userResume.setAddress(null);
 
-        user.setAddress(null);
         final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
         assertFalse(violations.isEmpty());
         final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
@@ -129,9 +155,9 @@ class PostPortabilityControllerTest {
     }
 
     @Test
-    public void verifyIfReturnsErrorMessageWithWrongBirthOfDate() throws Exception{
+    void verifyIfReturnsErrorMessageWithWrongBirthOfDate() throws Exception{
+        userResume.setDateOfBirth(getStringFutureDate());
 
-        user.setDateOfBirth(getStringFutureDate());
         final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
         assertFalse(violations.isEmpty());
         final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
@@ -139,9 +165,9 @@ class PostPortabilityControllerTest {
     }
 
     @Test
-    public void verifyIfReturnsErrorMessageWithNullSourceOperator() throws Exception{
-
+    void verifyIfReturnsErrorMessageWithNullSourceOperator() throws Exception{
         portabilityResume.setSource(null);
+
         final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
         assertFalse(violations.isEmpty());
         final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
@@ -149,9 +175,9 @@ class PostPortabilityControllerTest {
     }
 
     @Test
-    public void verifyIfReturnsErrorMessageWithEmptyTargetOperator() throws Exception{
-
+    void verifyIfReturnsErrorMessageWithEmptyTargetOperator() throws Exception{
         portabilityResume.setTarget(Strings.EMPTY);
+
         final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
         assertFalse(violations.isEmpty());
         final ConstraintViolation<InputPortability> violation = violations.stream().findAny().get();
@@ -159,10 +185,10 @@ class PostPortabilityControllerTest {
     }
 
     @Test
-    public void verifyIfReturnsErrorMessageWithWrongOperators() throws Exception{
-
+    void verifyIfReturnsErrorMessageWithWrongOperators() throws Exception{
         portabilityResume.setSource("OPERADORA_NAO_EXISTE");
         portabilityResume.setTarget("OPERADORA_NAO_EXISTE");
+
         final Set<ConstraintViolation<InputPortability>> violations = validator.validate(inputPortability);
         assertFalse(violations.isEmpty());
         final List<String> sViolations = getErrorMessageViolations(violations);
@@ -172,26 +198,6 @@ class PostPortabilityControllerTest {
 
     private static List<String> getErrorMessageViolations(Set<ConstraintViolation<InputPortability>> violations) {
         return violations.stream().map(violation -> violation.getMessage()).collect(Collectors.toList());
-    }
-
-    private InputPortability getInputPortability(PortabilityResume portabilityResume, UserResume user) {
-        return new InputPortability(portabilityResume, user);
-    }
-
-    private PortabilityResume getPortabilityResume(String source, String target) {
-        return new PortabilityResume( source, target);
-    }
-
-    private UserResume getUser(com.sysmap.srcmsportability.framework.adapters.in.dto.LineInformationResume lineInformationResume, AddressResume address, String name, String sDate, String documentNumber) {
-        return new UserResume(lineInformationResume, address, name, sDate, documentNumber);
-    }
-
-    private AddressResume getAddress(String street, String number, String city, String country, String stateOrRegion) {
-        return new AddressResume(street, number, city, country, stateOrRegion);
-    }
-
-    private LineInformationResume getLineInformation(String number) {
-        return new LineInformationResume(number);
     }
 
     private static String getStringFutureDate() {
