@@ -1,6 +1,7 @@
 package com.sysmap.srcmsportability.framework.adapters.in.dto;
 
 import com.sysmap.srcmsportability.application.ports.in.exceptions.customRestrictions.CheckDateOfBirthValidator;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -12,12 +13,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
+@AllArgsConstructor
 public class UserResume {
 
     @Valid
     @NotNull(message = "The line information cannot be null and must be filled in.")
     @OneToOne(cascade = CascadeType.PERSIST)
-    private LineInformationResume line;
+    private LineInformationResume lineInformation;
 
     @Valid
     @NotNull(message = "The address information cannot be null and must be filled in.")

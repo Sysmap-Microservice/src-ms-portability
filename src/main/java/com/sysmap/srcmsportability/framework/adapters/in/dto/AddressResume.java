@@ -1,10 +1,12 @@
 package com.sysmap.srcmsportability.framework.adapters.in.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
 @Data
+@AllArgsConstructor
 public class AddressResume {
 
     @NotBlank(message = "Street must be filled in and cannot be null or blank.")

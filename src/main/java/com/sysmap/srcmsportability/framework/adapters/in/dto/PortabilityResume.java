@@ -2,9 +2,11 @@ package com.sysmap.srcmsportability.framework.adapters.in.dto;
 
 import com.sysmap.srcmsportability.application.ports.in.exceptions.customRestrictions.CellPhoneOperatorSourceValidator;
 import com.sysmap.srcmsportability.application.ports.in.exceptions.customRestrictions.CellPhoneOperatorTargetValidator;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class PortabilityResume {
 
     @CellPhoneOperatorSourceValidator(message =
