@@ -19,7 +19,7 @@ public class UserResume {
     @Valid
     @NotNull(message = "The line information cannot be null and must be filled in.")
     @OneToOne(cascade = CascadeType.PERSIST)
-    private LineInformationResume lineInformation;
+    private LineInformationResume line;
 
     @Valid
     @NotNull(message = "The address information cannot be null and must be filled in.")

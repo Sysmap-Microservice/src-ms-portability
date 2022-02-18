@@ -4,7 +4,6 @@ import com.sysmap.srcmsportability.application.ports.in.PortabilityService;
 import com.sysmap.srcmsportability.domain.Portability;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPortability;
 import com.sysmap.srcmsportability.framework.adapters.in.dto.InputPutStatus;
-import com.sysmap.srcmsportability.framework.adapters.in.exceptions.PortabilityNotFound;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
