@@ -39,6 +39,7 @@ public class CheckDateOfBirthNotNullOrInvalid implements ConstraintValidator<Che
         try {
             localDate = LocalDate.parse(dateOfBirth);
         } catch (DateTimeParseException e) {
+            System.out.println(e.getMessage());
         }
         return localDate;
     }
